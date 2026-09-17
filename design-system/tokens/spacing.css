@@ -1,0 +1,138 @@
+/* ============================================================================
+ * Spacing, radius and border tokens — ported from apps/design_system
+ *
+ * Source of truth:
+ *   lib/core/theme/tokens/scale.dart           -> class Scale
+ *   lib/core/theme/tokens/layout_tokens.dart   -> class LayoutTokens
+ *
+ * The numeric scale is not a Tailwind-ish 4px grid — it has a fine-grained
+ * 1/2/4 head (s25, s50, s100) and runs to 64. It is kept as its own set rather
+ * than remapped onto Tailwind's spacing scale, because the Flutter source names
+ * these values and screens reference them by name. Tailwind's own spacing
+ * utilities (p-4, gap-3) remain available and co-exist; they are not the same
+ * ladder, so prefer the named tokens in app code.
+ *
+ * Note the naming trap these preserve: borderRadiusLg (24) is LARGER than
+ * borderRadiusMd (16), and buttons use LG. A "lg" radius here means 24px.
+ * ========================================================================= */
+
+:root {
+  /* ── Scale (scale.dart) ─────────────────────────────────────────────── */
+  --s0: 0;
+  --s25: 1px;
+  --s50: 2px;
+  --s100: 4px;
+  --s200: 8px;
+  --s300: 12px;
+  --s400: 16px;
+  --s500: 20px;
+  --s600: 24px;
+  --s700: 28px;
+  --s800: 32px;
+  --s900: 36px;
+  --s1000: 40px;
+  --s1100: 44px;
+  --s1200: 48px;
+  --s1300: 52px;
+  --s1400: 56px;
+  --s1500: 60px;
+  --s1600: 64px;
+
+  /* ── Named spacing (layout_tokens.dart) ─────────────────────────────── */
+  --spacing-3xs: var(--s50); /* 2 */
+  --spacing-2xs: var(--s100); /* 4 */
+  --spacing-xs: var(--s200); /* 8 */
+  --spacing-sm: var(--s300); /* 12 */
+  --spacing-md: var(--s400); /* 16 */
+  --spacing-lg: var(--s600); /* 24 */
+  --spacing-xl: var(--s800); /* 32 */
+  --spacing-2xl: var(--s1200); /* 48 */
+  --spacing-3xl: var(--s1400); /* 56 */
+
+  /* ── Border radius (layout_tokens.dart) ─────────────────────────────────
+   * Named --ds-radius-* rather than --radius-* on purpose. Tailwind v4 compiles
+   * `rounded-lg` to `border-radius: var(--radius-lg)`, so declaring a bare
+   * `--radius-lg: 24px` here would silently redefine Tailwind's own radius
+   * scale and make every `rounded-sm/md/lg` in the app mean something else.
+   * Use the arbitrary-value form instead: `rounded-(--ds-radius-lg)`.
+   * -------------------------------------------------------------------- */
+  --ds-radius-none: 0;
+  --ds-radius-sm: var(--s200); /* 8 */
+  --ds-radius-md: var(--s400); /* 16 */
+  --ds-radius-lg: var(--s600); /* 24 — buttons use THIS */
+
+  /* ── Border width (layout_tokens.dart) ──────────────────────────────── */
+  --border-width-none: 0;
+  --border-width-sm: var(--s25); /* 1 */
+  --border-width-md: var(--s50); /* 2 */
+  --border-width-lg: var(--s100); /* 4 */
+
+  /* ── Page padding (layout_tokens.dart) ──────────────────────────────── */
+  --page-padding-horizontal: 16px;
+  --page-padding-vertical: 0px;
+
+  /* ── Standard component dimensions ──────────────────────────────────────
+   * Lifted from the components themselves, so a screen can size a placeholder
+   * to match a real component without duplicating the magic number.
+   * -------------------------------------------------------------------- */
+  --button-height-regular: 48px; /* app_button.dart */
+  --button-height-compact: 32px;
+  --icon-button-sm: 32px; /* app_icon_button.dart */
+  --icon-button-md: 48px;
+  --icon-button-lg: 64px;
+  --avatar-sm: 48px; /* app_avatar.dart */
+  --avatar-md: 64px;
+  --avatar-lg: 88px;
+  --circle-sm: 48px; /* app_circle.dart */
+  --circle-md: 64px;
+  --circle-lg: 88px;
+  --icon-circle-sm: 32px; /* app_icon_circle.dart */
+  --icon-circle-md: 48px;
+  --icon-circle-lg: 56px;
+  --state-indicator-sm: 32px; /* app_state_indicator.dart */
+  --state-indicator-md: 48px;
+  --state-indicator-lg: 56px;
+  --text-field-height: 56px; /* app_text_field.dart */
+  --list-tile-min-height: 56px; /* app_list_tile.dart */
+  --top-bar-height: 64px; /* app_top_bar.dart, app_primary_bar.dart, app_brand_bar.dart */
+  --bottom-bar-item-height: 56px; /* app_bottom_bar.dart */
+  --bottom-bar-height: 56px;
+  --tab-bar-height: 40px; /* app_tab_bar.dart */
+  --category-chip-row-height: 34px; /* category_chips.dart */
+  --search-bar-height: 44px; /* home_search_bar.dart */
+  --online-badge-size: 12px; /* app_online_badge.dart */
+  --switch-width: 64px;
+  --switch-height: 32px;
+  --step-progress-height: 4px;
+  --step-progress-gap: 16px;
+  --loading-indicator-size: 56px;
+  --loading-indicator-stroke: 4px;
+  --icon-xs: 16px; /* app_icon.dart */
+  --icon-sm: 20px;
+  --icon-md: 24px;
+  --icon-lg: 32px;
+}
+
+/* ── Shadows ───────────────────────────────────────────────────────────────
+ * There is no shadow token class in the Flutter source — every shadow is a
+ * literal at its use site. The complete set is collected here so the
+ * prototype does not invent new ones. Values are the source's own.
+ * ------------------------------------------------------------------------ */
+:root {
+  /* onboarding_complete_page.dart — the pulsing ring */
+  --shadow-onboarding-ring: 0 0 24px 4px color-mix(in srgb, var(--surface-action) 15%, transparent);
+  --shadow-onboarding-success: 0 0 24px 4px
+    color-mix(in srgb, var(--surface-action) 30%, transparent);
+  /* waiting_for_mentor_overlay.dart */
+  --shadow-bottom-sheet-lift: 0 -2px 8px 0 rgb(0 0 0 / 0.08);
+  /* mentor_hero_section.dart */
+  --shadow-mentor-hero: 0 4px 16px 0 rgb(0 0 0 / 0.06);
+  /* core/.../session_banner.dart */
+  --shadow-session-banner: 0 2px 4px 0 rgb(0 0 0 / 0.15);
+  /* core/.../jump_to_latest_pill.dart */
+  --shadow-jump-pill: 0 2px 8px 0 rgb(0 0 0 / 0.12);
+  /* core/.../audio_call_overlay.dart — the end-call button */
+  --shadow-call-end: 0 0 20px 2px color-mix(in srgb, var(--call-end-red) 40%, transparent);
+  /* app_theme.dart — bottom sheet elevation 45 */
+  --shadow-bottom-sheet: 0 -8px 45px 0 rgb(0 0 0 / 0.18);
+}

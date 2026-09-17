@@ -1,0 +1,290 @@
+/* ============================================================================
+ * Motion tokens — ported from apps/design_system + apps/mentee_app
+ *
+ * There is NO shared animation-constants class in the Flutter source; every
+ * duration and curve is an inline literal. This file is therefore a
+ * consolidation, not a transcription — the values are the source's own, the
+ * names are ours. Having them in one place is what keeps the prototype's feel
+ * consistent across screens.
+ *
+ * Flutter's Curves are cubic-bezier approximations here. elasticOut is a spring
+ * with real overshoot, which CSS cannot express exactly; the curve below is the
+ * usual close approximation. If the onboarding check-mark lands visibly flatter
+ * than the real app, that is the one place worth hand-tuning.
+ * ========================================================================= */
+
+:root {
+  /* ── Curves ─────────────────────────────────────────────────────────── */
+  --ease-in: cubic-bezier(0.42, 0, 1, 1); /* Curves.easeIn */
+  --ease-out: cubic-bezier(0, 0, 0.58, 1); /* Curves.easeOut */
+  --ease-in-out: cubic-bezier(0.42, 0, 0.58, 1); /* Curves.easeInOut */
+  --ease-elastic-out: cubic-bezier(0.22, 1.45, 0.36, 1); /* Curves.elasticOut */
+  --ease-linear: linear;
+
+  /* ── Page transitions (router/page_transitions.dart) ────────────────── */
+  /* slideTransition: Offset(1,0) -> Offset.zero, CustomTransitionPage default */
+  --duration-route: 300ms;
+  /* session_overlay_manager.dart — call overlay fade */
+  --duration-call-overlay: 300ms;
+
+  /* ── Shimmer (ui/core/widgets/shimmer.dart) ─────────────────────────── */
+  /* ShimmerScope default: 1500ms, repeat(), no curve */
+  --duration-shimmer: 1500ms;
+
+  /* ── Home banner carousel (local_banner_carousel.dart) ──────────────── */
+  --duration-carousel-scroll: 350ms;
+  --duration-carousel-dot: 200ms;
+  --interval-carousel-autoplay: 4000ms;
+
+  /* ── Onboarding completion (onboarding_complete_page.dart) ──────────── */
+  --duration-onboarding-pulse: 1500ms; /* repeat(reverse: true) */
+  --duration-onboarding-success: 800ms;
+
+  /* ── Deliberate waits that shape the felt experience ────────────────── */
+  --delay-onboarding-shell: 2000ms; /* onboarding_shell.dart */
+  --delay-counselling-connecting: 2000ms; /* counselling_connecting_page.dart */
+  --delay-review-sheet: 500ms; /* session_overlay_manager.dart */
+  --delay-call-min-duration: 2000ms; /* audio/video_call_overlay.dart */
+  --debounce-search: 600ms; /* search_bloc.dart */
+  --duration-tab-switch: 200ms; /* mentor_profile_page.dart AnimatedSwitcher */
+
+  /* ── Transient UI lifetimes ─────────────────────────────────────────── */
+  --duration-network-banner: 2000ms; /* network_banner.dart "Back online" */
+  --duration-toast: 4000ms; /* notification_listener.dart */
+  --duration-toast-long: 5000ms;
+}
+
+/* ── The screen-enter animation ────────────────────────────────────────────
+ * Flutter slides every pushed page in from the right over 300ms with easeInOut.
+ * CSS can animate the incoming screen but not the outgoing one, so screens
+ * slide in and the previous screen simply cuts. This is a known, accepted
+ * limitation of building on the App Router — it is not a bug to file.
+ * ------------------------------------------------------------------------ */
+@keyframes screen-enter {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.screen-enter {
+  animation: screen-enter var(--duration-route) var(--ease-in-out) both;
+}
+
+/* Full-screen overlays fade rather than slide (call overlay, photo viewer). */
+@keyframes overlay-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.overlay-fade-in {
+  animation: overlay-fade-in var(--duration-call-overlay) var(--ease-out) both;
+}
+
+/* Sheets rise from the bottom edge of the phone. */
+@keyframes sheet-enter {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.sheet-enter {
+  animation: sheet-enter 250ms var(--ease-out) both;
+}
+
+/* Dialogs scale in over a fading scrim. */
+@keyframes modal-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.modal-enter {
+  animation: modal-enter 200ms var(--ease-out) both;
+}
+
+@keyframes scrim-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.scrim-enter {
+  animation: scrim-enter 200ms var(--ease-out) both;
+}
+
+/* The mentor profile's About/Reviews switch — Flutter's
+ * `AnimatedSwitcher(duration: 200ms)` with its default FadeTransition (the
+ * source passes no transitionBuilder, so it is a plain cross-fade). Only the
+ * INCOMING tab animates: the outgoing one is gone the instant the key changes,
+ * which is the same "cannot animate an exit" limitation noted in the plan. */
+@keyframes tab-switch-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.tab-switch-enter {
+  animation: tab-switch-enter 200ms var(--ease-out) both;
+}
+
+/* ── Spinner ───────────────────────────────────────────────────────────────
+ * Material's CircularProgressIndicator grows and shrinks an arc; a uniform
+ * rotation of an open ring is the cheap CSS equivalent and reads the same at
+ * app sizes. Used by AppLoadingSpinner / AppLoadingIndicator.
+ * ------------------------------------------------------------------------ */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── Shimmer sweep (shimmer.dart) ──────────────────────────────────────────
+ * The source is a 5-stop gradient over [base, lerp(base,highlight,0.4),
+ * highlight, lerp(0.4), base] with stops [0, 0.35, 0.5, 0.65, 1] sliding on
+ * an angle, applied through a ShaderMask in srcATop. Reproduced as a
+ * background-position sweep, which reads the same.
+ * ------------------------------------------------------------------------ */
+@keyframes shimmer-sweep {
+  from {
+    background-position: -200% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer-bone {
+  background-image: linear-gradient(
+    100deg,
+    var(--surface-shimmer-base) 0%,
+    color-mix(in srgb, var(--surface-shimmer-base) 60%, var(--surface-shimmer-highlight)) 35%,
+    var(--surface-shimmer-highlight) 50%,
+    color-mix(in srgb, var(--surface-shimmer-base) 60%, var(--surface-shimmer-highlight)) 65%,
+    var(--surface-shimmer-base) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer-sweep var(--duration-shimmer) var(--ease-linear) infinite;
+}
+
+/* ── Onboarding completion (onboarding_complete_page.dart) ─────────────────
+ * Four animations, two controllers. The pulse controller is 1.5s and reverses
+ * forever; the success controller is 800ms and runs once.
+ *
+ * The intervals are the source's own and are the part that is easy to get
+ * wrong: the check scales on the FIRST 60% (elasticOut), its opacity resolves
+ * in the first 30% (easeIn), and the text block does not start until 30% —
+ * sliding up 20px and fading in by 70–80%. So the tick lands before the words
+ * move, which is what makes it read as a sequence rather than one fade.
+ * ------------------------------------------------------------------------ */
+
+/* _buildLoadingIcon: Transform.scale, 1.0 -> 1.05, reversing. */
+@keyframes onb-breathe {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.05);
+  }
+}
+
+.onb-breathe {
+  animation: onb-breathe var(--duration-onboarding-pulse) var(--ease-in-out) infinite alternate;
+}
+
+/* The loading subtitle: opacity 0.5 -> 1.0 on the same reversing controller. */
+@keyframes onb-pulse {
+  from {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.onb-pulse {
+  animation: onb-pulse var(--duration-onboarding-pulse) var(--ease-in-out) infinite alternate;
+}
+
+/* _buildSuccessIcon: scale 0 -> 1 over 0–60%, elasticOut. */
+@keyframes onb-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.onb-pop {
+  animation: onb-pop var(--duration-onboarding-success) var(--ease-elastic-out) both;
+}
+
+/* The success title + subtitle: slide up 20px, fade in — both starting at 30%. */
+@keyframes onb-rise {
+  0%,
+  30% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.onb-rise {
+  animation: onb-rise var(--duration-onboarding-success) var(--ease-out) both;
+}
+
+/* The 3px ring the loading state holds. */
+.onb-spin {
+  animation: spin 900ms linear infinite;
+}
+
+/* Respect a reduced-motion preference: the app should still be usable, so
+   animations collapse to effectively instant rather than being removed. */
+@media (prefers-reduced-motion: reduce) {
+  .screen-enter,
+  .overlay-fade-in,
+  .sheet-enter,
+  .modal-enter,
+  .scrim-enter,
+  .shimmer-bone,
+  .onb-breathe,
+  .onb-pulse,
+  .onb-pop,
+  .onb-rise,
+  .onb-spin {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

@@ -1,0 +1,308 @@
+/* ============================================================================
+ * Colour tokens — ported from apps/design_system
+ *
+ * Source of truth:
+ *   lib/core/theme/tokens/colors/semantic_colors.dart   (the raw ramps)
+ *   lib/core/theme/foundations/surface_colors.dart       (surface.*)
+ *   lib/core/theme/foundations/text_colors.dart          (text.*)
+ *   lib/core/theme/foundations/icon_colors.dart          (icon.*)
+ *   lib/core/theme/foundations/border_colors.dart        (border.*)
+ *
+ * Flutter keeps all application colour in a ThemeExtension called
+ * AppColorScheme with FOUR semantic groups — text, surface, icon, border.
+ * Material's own ColorScheme is never set, so it is deliberately NOT ported:
+ * nothing in this app should reach for a generic `primary`.
+ *
+ * The groups are preserved as variable name prefixes so the port reads like the
+ * original: `colors.surface.action` here is `--surface-action`.
+ *
+ * SCOPE: these live on the phone root element (via [data-theme]), not on :root.
+ * The prototype's own chrome — the backdrop and the screen-index panel — is
+ * themed separately in chrome.css so the two can differ.
+ * ========================================================================= */
+
+/* ── Raw palette ───────────────────────────────────────────────────────────
+ * semantic_colors.dart. Note there is no primaryDefault: primary400 is the
+ * brand action colour. Error/warning/success/info/neutral each have a "Default"
+ * slot at the 500 position instead of a `500`.
+ * These are theme-independent, so they sit on :root.
+ * ------------------------------------------------------------------------ */
+:root {
+  /* Primary — brand blue. primary400 is the action colour. */
+  --palette-primary-50: #e6ecf7;
+  --palette-primary-100: #cdd9ef;
+  --palette-primary-200: #b4c5e7;
+  --palette-primary-300: #9bb2df;
+  --palette-primary-400: #4374ba;
+  --palette-primary-500: #3a659d;
+  --palette-primary-600: #335884;
+  --palette-primary-700: #2c496c;
+  --palette-primary-800: #253a54;
+  --palette-primary-900: #1e2b3d;
+
+  /* Secondary — teal. "Default" sits at the 500 position. */
+  --palette-secondary-50: #e5f9f5;
+  --palette-secondary-100: #cbf3eb;
+  --palette-secondary-200: #a7e7dc;
+  --palette-secondary-300: #7fdacb;
+  --palette-secondary-400: #5fcebd;
+  --palette-secondary-default: #41bda6;
+  --palette-secondary-600: #3aa792;
+  --palette-secondary-700: #338f7c;
+  --palette-secondary-800: #2b7767;
+  --palette-secondary-900: #235f52;
+
+  /* Error */
+  --palette-error-50: #fde9eb;
+  --palette-error-100: #f9c9ce;
+  --palette-error-200: #f49fa6;
+  --palette-error-300: #ee7581;
+  --palette-error-400: #e64c5a;
+  --palette-error-default: #dc3545;
+  --palette-error-600: #be2e3c;
+  --palette-error-700: #a02733;
+  --palette-error-800: #821f2a;
+  --palette-error-900: #641821;
+
+  /* Warning — note 900 is a dark brown, not a yellow. */
+  --palette-warning-50: #fff8e1;
+  --palette-warning-100: #ffecb3;
+  --palette-warning-200: #ffe082;
+  --palette-warning-300: #ffd54f;
+  --palette-warning-400: #ffca28;
+  --palette-warning-default: #ffc107;
+  --palette-warning-600: #ffb300;
+  --palette-warning-700: #ffa000;
+  --palette-warning-800: #ff8f00;
+  --palette-warning-900: #4a2800;
+
+  /* Success */
+  --palette-success-50: #f0fdf4;
+  --palette-success-100: #dcfce7;
+  --palette-success-200: #bbf7d0;
+  --palette-success-300: #86efac;
+  --palette-success-400: #4ade80;
+  --palette-success-default: #22c55e;
+  --palette-success-600: #16a34a;
+  --palette-success-700: #15803d;
+  --palette-success-800: #166534;
+  --palette-success-900: #14532d;
+
+  /* Neutral — Tailwind-flavoured, renamed 500 -> "Default".
+     neutralBlack is 0x00000000 in the source: fully TRANSPARENT, not black.
+     Reproduced as-is for fidelity; use --palette-neutral-900 for real black. */
+  --palette-neutral-50: #fafafa;
+  --palette-neutral-100: #f1f1f1;
+  --palette-neutral-200: #e5e5e5;
+  --palette-neutral-300: #d4d4d4;
+  --palette-neutral-400: #a3a3a3;
+  --palette-neutral-default: #737373;
+  --palette-neutral-600: #525252;
+  --palette-neutral-700: #404040;
+  --palette-neutral-800: #262626;
+  --palette-neutral-900: #171717;
+  --palette-neutral-white: #ffffff;
+  --palette-neutral-black: transparent; /* see note above */
+
+  /* Info */
+  --palette-info-50: #ecf9fc;
+  --palette-info-100: #d6f1f9;
+  --palette-info-200: #b4e3f2;
+  --palette-info-300: #8dd3ea;
+  --palette-info-400: #60c1e1;
+  --palette-info-default: #3aaed8;
+  --palette-info-600: #2f98bd;
+  --palette-info-700: #237c9a;
+  --palette-info-800: #1a6075;
+  --palette-info-900: #123e4d;
+}
+
+/* ── Feature colours ───────────────────────────────────────────────────────
+ * app_feature_colors.dart. NOT theme-aware — identical in light and dark.
+ * ------------------------------------------------------------------------ */
+:root {
+  --feature-live: #be2e3c; /* live badge red */
+  --feature-rating: #ffca28; /* star gold */
+  --feature-cost: #16a34a; /* money green */
+  --feature-chat-bg: #cdd9ef;
+
+  /* CategoryColor { icon, background } */
+  --category-language-icon: #c28b35;
+  --category-language-bg: #ffe7c4;
+  --category-current-status-icon: #237c9a;
+  --category-current-status-bg: #d6f1f9;
+  --category-active-time-icon: #be2e3c;
+  --category-active-time-bg: #f9c9ce;
+  --category-wallet-icon: #16a34a;
+  --category-wallet-bg: #dcfce7;
+  --category-following-icon: #237c9a;
+  --category-following-bg: #d6f1f9;
+  --category-profile-icon: #237c9a;
+  --category-profile-bg: #d6f1f9;
+  --category-review-icon: #ffb300;
+  --category-review-bg: #ffecb3;
+  --category-setting-icon: #41bda6;
+  --category-setting-bg: #cbf3eb;
+
+  /* Loosely-defined hexes that appear in the source without a token name.
+     Listed here so screens never inline a raw hex. */
+  --status-online: #4caf50;
+  --status-busy: #ffa726;
+  --shimmer-bone-override: #ebebf4;
+  --tint-green-bg: #e8f5e9;
+  --tint-red-bg: #ffebee;
+  --tint-purple-icon: #8b5cf6;
+  --tint-purple-bg: #ede9fe;
+  --tint-order-icon: #7e57c2;
+  --tint-order-bg: #ede7f6;
+  --tint-following-icon: #42a5f5;
+  --tint-following-bg: #e3f2fd;
+  --tint-settings-icon: #41bda6;
+  --tint-settings-bg: #cbf3eb;
+  --call-end-red: #ef4444;
+  --call-reconnecting: #fbbf24;
+}
+
+/* ── Light semantics ───────────────────────────────────────────────────── */
+[data-theme='light'] {
+  /* SurfaceColors.light() */
+  --surface-page: var(--palette-neutral-100); /* #F1F1F1 — app background */
+  --surface-primary: var(--palette-neutral-white); /* #FFFFFF — card/sheet bg */
+  --surface-secondary: var(--palette-neutral-600);
+  --surface-error: var(--palette-error-50);
+  --surface-warning: var(--palette-warning-50);
+  --surface-info: var(--palette-info-50);
+  --surface-success: var(--palette-success-50);
+  --surface-action: var(--palette-primary-400); /* #4374BA — brand fill */
+  --surface-action-light: var(--palette-primary-100);
+  --surface-action-hover: var(--palette-primary-600);
+  --surface-shadow: var(--palette-neutral-50);
+  --surface-disabled: var(--palette-neutral-200);
+  --surface-shimmer-base: var(--palette-neutral-200);
+  --surface-shimmer-highlight: var(--palette-neutral-50);
+
+  /* TextColors.light() */
+  --text-heading: var(--palette-neutral-800);
+  --text-body: var(--palette-neutral-700);
+  --text-body-light: var(--palette-neutral-default);
+  --text-destructive: var(--palette-error-400);
+  --text-error: var(--palette-error-default);
+  --text-info: var(--palette-info-default);
+  --text-on-action: var(--palette-neutral-white);
+  --text-on-disabled: var(--palette-neutral-700);
+  --text-success: var(--palette-success-default);
+  --text-warning: var(--palette-warning-default);
+  --text-action: var(--palette-primary-400);
+  --text-action-hover: var(--palette-primary-600);
+
+  /* AppTheme._snackBarLight(): neutral600 behind white w500 text. Not part of
+     AppColorScheme — the snackbar is themed by Material's own SnackBarThemeData,
+     which is why these three are named after the widget, not a semantic group. */
+  --snackbar-bg: var(--palette-neutral-600);
+  --snackbar-text: var(--palette-neutral-white);
+  --snackbar-action: var(--palette-primary-300);
+
+  /* IconColors.light() */
+  --icon-primary: var(--palette-neutral-default);
+  --icon-secondary: var(--palette-neutral-800);
+  --icon-action: var(--palette-primary-400);
+  --icon-success: var(--palette-success-default);
+  --icon-info: var(--palette-info-default);
+  --icon-warning: var(--palette-warning-default);
+  --icon-error: var(--palette-error-default);
+  --icon-on-action: var(--palette-neutral-white);
+  --icon-disabled: var(--palette-neutral-300);
+
+  /* AppStateIndicator._onCircleIconColor(): the icon colour inside the
+     success/info circle is picked from the CIRCLE's luminance — light circle
+     gets the dark icon, dark circle gets the light one. The two source colours
+     are static per theme, so the branch is resolved here rather than at
+     runtime, which keeps the component SSR-safe (no getComputedStyle).
+     Light: success #22c55e (lum .41) and info #3aaed8 (lum .36) are both dark
+     circles -> white icon. Dark: success-300 #86efac (.70) is a LIGHT circle
+     -> page-coloured icon. */
+  --icon-on-success-circle: var(--palette-neutral-white);
+  --icon-on-info-circle: var(--palette-neutral-white);
+
+  /* BorderColors.light() */
+  --border-primary: var(--palette-neutral-600);
+  --border-primary-light: var(--palette-neutral-300);
+  --border-secondary: var(--palette-primary-400);
+  --border-loading: var(--palette-primary-300);
+  --border-success: var(--palette-success-400);
+  --border-info: var(--palette-info-default);
+  --border-warning: var(--palette-warning-default);
+  --border-error: var(--palette-error-default);
+  --border-action: var(--palette-primary-400);
+  --border-action-hover: var(--palette-primary-600);
+  --border-focus: var(--palette-primary-400);
+  --border-disabled: var(--palette-neutral-300);
+}
+
+/* ── Dark semantics ────────────────────────────────────────────────────── */
+[data-theme='dark'] {
+  /* SurfaceColors.dark() */
+  --surface-page: var(--palette-neutral-900); /* #171717 */
+  --surface-primary: var(--palette-neutral-800); /* #262626 */
+  --surface-secondary: var(--palette-neutral-300);
+  --surface-error: var(--palette-error-900);
+  --surface-warning: var(--palette-warning-900);
+  --surface-info: var(--palette-info-900);
+  --surface-success: var(--palette-success-900);
+  --surface-action: var(--palette-primary-400); /* unchanged in dark */
+  --surface-action-light: var(--palette-primary-900);
+  --surface-action-hover: var(--palette-primary-500);
+  --surface-shadow: var(--palette-neutral-800);
+  --surface-disabled: var(--palette-neutral-700);
+  --surface-shimmer-base: var(--palette-neutral-700);
+  --surface-shimmer-highlight: var(--palette-neutral-600);
+
+  /* TextColors.dark() */
+  --text-heading: var(--palette-neutral-50);
+  --text-body: var(--palette-neutral-200);
+  --text-body-light: var(--palette-neutral-400);
+  --text-destructive: var(--palette-error-300);
+  --text-error: var(--palette-error-300);
+  --text-info: var(--palette-info-300);
+  --text-on-action: var(--palette-neutral-white);
+  --text-on-disabled: var(--palette-neutral-400);
+  --text-success: var(--palette-success-400);
+  --text-warning: var(--palette-warning-300);
+  --text-action: var(--palette-primary-400);
+  --text-action-hover: var(--palette-primary-200);
+
+  /* AppTheme._snackBarDark(): the polarity flips — a LIGHT bar with dark text. */
+  --snackbar-bg: var(--palette-neutral-300);
+  --snackbar-text: var(--palette-neutral-700);
+  --snackbar-action: var(--palette-primary-400);
+
+  /* IconColors.dark() */
+  --icon-primary: var(--palette-neutral-300);
+  --icon-secondary: var(--palette-neutral-200);
+  --icon-action: var(--palette-primary-400);
+  --icon-success: var(--palette-success-300);
+  --icon-info: var(--palette-info-300);
+  --icon-warning: var(--palette-warning-300);
+  --icon-error: var(--palette-error-300);
+  --icon-on-action: var(--palette-neutral-white);
+  --icon-disabled: var(--palette-neutral-600);
+
+  /* See the light block: in dark the success/info circles are the 300 ramp
+     steps, which are light enough to need a dark icon. */
+  --icon-on-success-circle: var(--palette-neutral-900);
+  --icon-on-info-circle: var(--palette-neutral-900);
+
+  /* BorderColors.dark() */
+  --border-primary: var(--palette-neutral-400);
+  --border-primary-light: var(--palette-neutral-700);
+  --border-secondary: var(--palette-primary-300);
+  --border-loading: var(--palette-primary-200);
+  --border-success: var(--palette-success-300);
+  --border-info: var(--palette-info-300);
+  --border-warning: var(--palette-warning-300);
+  --border-error: var(--palette-error-300);
+  --border-action: var(--palette-primary-300);
+  --border-action-hover: var(--palette-primary-200);
+  --border-focus: var(--palette-primary-300);
+  --border-disabled: var(--palette-neutral-600);
+}

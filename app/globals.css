@@ -1,0 +1,174 @@
+@import 'tailwindcss';
+
+/* Design-system tokens. Order matters only in that colours must be defined
+   before anything referencing them resolves at paint time; CSS custom
+   properties are resolved lazily, so this is purely organisational. */
+@import '../design-system/tokens/colors.css';
+@import '../design-system/tokens/typography.css';
+@import '../design-system/tokens/spacing.css';
+@import '../design-system/tokens/motion.css';
+
+/* ============================================================================
+ * Prototype chrome
+ *
+ * The furniture AROUND the phone — the backdrop, the screen-index panel, the
+ * header. This is NOT part of the Flutter design system and deliberately does
+ * not use its tokens: it should read as a neutral review surface so the eye
+ * goes to the phone. It follows the browser's system preference rather than the
+ * in-app theme, so you can review the app in Dark while the chrome stays light.
+ * ========================================================================= */
+:root {
+  --chrome-bg: #ececee;
+  --chrome-bg-raised: #ffffff;
+  --chrome-border: #dcdce0;
+  --chrome-text: #1c1c1f;
+  --chrome-text-muted: #6b6b73;
+  --chrome-text-faint: #9a9aa2;
+  --chrome-accent: #4374ba; /* matches surface.action, so the chrome feels related */
+  --chrome-hover: #f4f4f6;
+  --chrome-selected: #e6ecf7;
+  --chrome-bezel: #1a1a1c;
+  --chrome-bezel-edge: #3a3a3e;
+
+  /* iPhone-ish device metrics. The prototype targets this fixed viewport and is
+     deliberately not responsive — see README. */
+  --phone-width: 390px;
+  --phone-height: 844px;
+  --phone-radius: 54px;
+  --phone-bezel: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --chrome-bg: #121214;
+    --chrome-bg-raised: #1c1c1f;
+    --chrome-border: #2e2e33;
+    --chrome-text: #f2f2f4;
+    --chrome-text-muted: #a0a0a8;
+    --chrome-text-faint: #6b6b73;
+    --chrome-hover: #26262b;
+    --chrome-selected: #1e2b3d;
+    --chrome-bezel: #0a0a0b;
+    --chrome-bezel-edge: #2a2a2e;
+  }
+}
+
+/* Material Symbols Outlined, self-hosted.
+   The Flutter app uses Material Icons, so the glyphs have to match rather than
+   merely mean the same thing. Self-hosted rather than loaded from the Google
+   CDN so the prototype works offline and does not depend on a third party at
+   runtime. This is the full variable font (all four axes), which is why it is
+   ~4MB — a one-time cost, cached after first load.
+
+   Icons render as ligatures: <Icon name="chat" /> emits the text "chat", which
+   the font's `liga` feature turns into the glyph. */
+@font-face {
+  font-family: 'Material Symbols Outlined';
+  font-style: normal;
+  font-weight: 100 700;
+  font-display: block;
+  src: url('/fonts/material-symbols/material-symbols-outlined.woff2') format('woff2');
+}
+
+@theme inline {
+  /* next/font injects --font-manrope on <html>; wire it into Tailwind so
+     `font-sans` is Manrope and utilities inherit it. */
+  --font-sans: var(--font-manrope);
+}
+
+@layer components {
+  .material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal;
+    font-style: normal;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    font-feature-settings: 'liga';
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+    /* Keep the optical size pinned so a 16px icon and a 32px icon are the same
+       drawing scaled, which is what Flutter's IconData does. */
+    font-variation-settings:
+      'FILL' var(--icon-fill, 0),
+      'wght' var(--icon-weight, 400),
+      'GRAD' 0,
+      'opsz' var(--icon-opsz, 24);
+  }
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background: var(--chrome-bg);
+    color: var(--chrome-text);
+    font-family: var(--font-manrope);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* The app has no text selection affordance — it is an app, not a document.
+     Opted back in per-element where it matters (referral code, chat text). */
+  button {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  input,
+  textarea,
+  select {
+    font: inherit;
+    color: inherit;
+  }
+
+  /* Flutter paints no scrollbars inside a mobile app, and neither should the
+     phone. The screen-index panel keeps a slim one since it is prototype
+     furniture, not app UI. */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .thin-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--chrome-border) transparent;
+  }
+  .thin-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  .thin-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--chrome-border);
+    border-radius: 4px;
+  }
+  .thin-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+@layer components {
+  /* Selectable text, for the few places the app shows something copyable. */
+  .selectable {
+    user-select: text;
+    -webkit-user-select: text;
+  }
+}

@@ -1,0 +1,147 @@
+/* ============================================================================
+ * Typography tokens — ported from apps/design_system
+ *
+ * Source of truth:
+ *   lib/core/theme/app_theme.dart            -> AppTheme._textTheme(fontFamily)
+ *   lib/core/theme/tokens/typography_tokens.dart
+ *
+ * TWO THINGS THAT MATTER:
+ *
+ * 1. EVERY style in the Flutter theme is font-weight 500. There is no weight
+ *    variation in the scale at all. Emphasis in this design comes from per-widget
+ *    overrides — w600 on card titles and top bars, w700 on primary-bar titles and
+ *    rate labels. So each class below sets 500 as the BASE and screens layer
+ *    Tailwind's font-semibold / font-bold on top. These classes live in
+ *    @layer components, so utilities win without !important.
+ *
+ * 2. letterSpacing transfers as a direct px value. Flutter's logical pixel and
+ *    CSS px are the same unit here, and the source already stores these in
+ *    logical px (not em) — headlineLarge's -1.32 is only -0.04em at 33px.
+ *
+ * Flutter's TextStyle.height is a MULTIPLIER; the line-heights below are the
+ * px values it resolves to, which is what CSS wants.
+ *
+ * displayLarge / displayMedium / displaySmall are UNSET in the original — they
+ * fall through to Flutter's Material defaults. There are no classes for them and
+ * nothing should use them.
+ * ========================================================================= */
+
+@layer components {
+  /* ── Headline ─────────────────────────────────────────────────────────── */
+  .type-headline-lg {
+    font-family: var(--font-manrope);
+    font-size: 33px;
+    line-height: 48px;
+    letter-spacing: -1.32px;
+    font-weight: 500;
+  }
+  .type-headline-md {
+    font-family: var(--font-manrope);
+    font-size: 27px;
+    line-height: 40px;
+    letter-spacing: -1.32px;
+    font-weight: 500;
+  }
+  .type-headline-sm {
+    font-family: var(--font-manrope);
+    font-size: 23px;
+    line-height: 32px;
+    letter-spacing: -0.46px;
+    font-weight: 500;
+  }
+
+  /* ── Title ────────────────────────────────────────────────────────────── */
+  .type-title-lg {
+    font-family: var(--font-manrope);
+    font-size: 19px;
+    line-height: 24px;
+    letter-spacing: 0;
+    font-weight: 500;
+  }
+  .type-title-md {
+    font-family: var(--font-manrope);
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: -0.32px;
+    font-weight: 500;
+  }
+  .type-title-sm {
+    font-family: var(--font-manrope);
+    font-size: 13px;
+    line-height: 20px;
+    letter-spacing: -0.013px;
+    font-weight: 500;
+  }
+
+  /* ── Body ─────────────────────────────────────────────────────────────── */
+  .type-body-lg {
+    font-family: var(--font-manrope);
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: -0.24px;
+    font-weight: 500;
+  }
+  .type-body-md {
+    font-family: var(--font-manrope);
+    font-size: 13px;
+    line-height: 16px;
+    letter-spacing: -0.16px;
+    font-weight: 500;
+  }
+  .type-body-sm {
+    font-family: var(--font-manrope);
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0;
+    font-weight: 500;
+  }
+
+  /* ── Label ────────────────────────────────────────────────────────────── */
+  .type-label-lg {
+    font-family: var(--font-manrope);
+    font-size: 13px;
+    line-height: 16px;
+    letter-spacing: -0.24px;
+    font-weight: 500;
+  }
+  .type-label-md {
+    font-family: var(--font-manrope);
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: -0.24px;
+    font-weight: 500;
+  }
+  .type-label-sm {
+    font-family: var(--font-manrope);
+    font-size: 11px;
+    line-height: 16px;
+    letter-spacing: 0;
+    font-weight: 500;
+  }
+
+  /* ── Recurring widget-level weight overrides ──────────────────────────────
+   * These are the exact sites where the Flutter source deviates from w500.
+   * Named so screens express intent ("this is a card title") rather than
+   * re-deriving which weight a component happens to use.
+   * ---------------------------------------------------------------------- */
+
+  /* AppListTile title, AppTopBar title, AppModal title, AppBanner title,
+     MentorCard name, AppAvatar initials, RatingChip.sm, AppBrand */
+  .type-emphasis-semibold {
+    font-weight: 600;
+  }
+  /* AppPrimaryBar title, rate labels, WalletBadge value, CategoryChips selected */
+  .type-emphasis-bold {
+    font-weight: 700;
+  }
+}
+
+/* ── Paragraph spacing ─────────────────────────────────────────────────────
+ * TypographyTokens.paragraphSpacing*. Applied as a margin between paragraphs,
+ * not as a line-height, exactly as in the source.
+ * ------------------------------------------------------------------------ */
+:root {
+  --paragraph-spacing-sm: 8px;
+  --paragraph-spacing-md: 12px;
+  --paragraph-spacing-lg: 16px;
+}
